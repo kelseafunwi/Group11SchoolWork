@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:checkar_app/core/routes/app_routes.dart';
+import 'package:checkar_app/core/services/session_service.dart';
 import 'package:checkar_app/core/theme/app_colors.dart';
 import 'package:checkar_app/features/settings/data/settings_data.dart';
 import 'package:checkar_app/features/settings/widgets/diagnostic_status_card.dart';
@@ -112,7 +113,10 @@ class _SettingsViewState extends State<SettingsView> {
                             titleColor: AppColors.urgent,
                             iconColor: AppColors.urgent,
                             showDivider: false,
-                            onTap: () => Get.offAllNamed(AppRoutes.login),
+                            onTap: () async {
+                              await SessionService.clearSession();
+                              Get.offAllNamed(AppRoutes.login);
+                            },
                           ),
                         ],
                       ),

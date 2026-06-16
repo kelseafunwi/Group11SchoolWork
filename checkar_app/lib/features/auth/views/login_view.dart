@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:checkar_app/core/routes/app_routes.dart';
+import 'package:checkar_app/core/services/session_service.dart';
 import 'package:checkar_app/core/theme/app_colors.dart';
 import 'package:checkar_app/features/auth/widgets/login_header.dart';
 import 'package:checkar_app/features/auth/widgets/auth_password_toggle.dart';
@@ -26,7 +27,8 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  void _onSignIn() {
+  Future<void> _onSignIn() async {
+    await SessionService.markLoggedIn();
     Get.offAllNamed(AppRoutes.home);
   }
 

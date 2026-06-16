@@ -5,7 +5,10 @@ import 'package:checkar_app/core/navigation/app_navigator.dart';
 import 'package:checkar_app/features/auth/widgets/app_bottom_nav_bar.dart';
 import 'package:checkar_app/core/theme/app_colors.dart';
 import 'package:checkar_app/features/auth/widgets/auth_app_bar.dart';
+import 'package:checkar_app/features/results/controllers/diagnosis_controller.dart';
 import 'package:checkar_app/features/results/data/results_data.dart';
+import 'package:checkar_app/features/results/models/diagnosis_result_mapper.dart';
+import 'package:checkar_app/features/results/models/result_issue.dart';
 import 'package:checkar_app/features/results/widgets/mechanic_map_preview.dart';
 import 'package:checkar_app/features/results/widgets/result_issue_card.dart';
 import 'package:checkar_app/features/results/widgets/results_summary_card.dart';
@@ -15,6 +18,12 @@ class ResultsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final report = Get.find<DiagnosisController>().report.value;
+    final List<ResultIssue> issues = report != null
+        ? report.issues.map((issue) => issue.toResultIssue()).toList()
+        : ResultsData.issues;
+    final summary = report?.summary;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
@@ -34,10 +43,21 @@ class ResultsView extends StatelessWidget {
                     ResultsSummaryCard(
                       vehicleName: ResultsData.vehicleName,
                       scanDate: ResultsData.scanDate,
-                      issueCount: ResultsData.issueCount,
+                      issueCount: issues.length,
                     ),
+                    if (summary != null && summary.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        summary,
+                        style: const TextStyle(
+                          color: AppColors.greyDark,
+                          fontSize: 12,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 16),
-                    ...ResultsData.issues.map(
+                    ...issues.map(
                       (issue) => Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: ResultIssueCard(issue: issue),

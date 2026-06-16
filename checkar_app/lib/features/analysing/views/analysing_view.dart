@@ -9,6 +9,7 @@ import 'package:checkar_app/features/analysing/widgets/analysis_status_card.dart
 import 'package:checkar_app/features/analysing/widgets/analysis_step_indicator.dart';
 import 'package:checkar_app/features/analysing/widgets/analysing_icon.dart';
 import 'package:checkar_app/features/auth/widgets/auth_app_bar.dart';
+import 'package:checkar_app/features/results/controllers/diagnosis_controller.dart';
 
 class AnalysingView extends StatefulWidget {
   const AnalysingView({super.key});
@@ -19,11 +20,14 @@ class AnalysingView extends StatefulWidget {
 
 class _AnalysingViewState extends State<AnalysingView>
     with SingleTickerProviderStateMixin {
-  static const Duration _analysisDuration = Duration(seconds: 3);
+  static const Duration _minimumDisplayDuration = Duration(milliseconds: 1200);
 
   late final AnimationController _rotationController;
+  late final DiagnosisController _diagnosisController;
+  late final DateTime _startedAt;
   Timer? _stepTimer;
-  Timer? _completionTimer;
+  Worker? _statusWorker;
+  bool _hasNavigated = false;
 
   int _activeStep = 0;
   bool _obdComplete = false;
@@ -32,39 +36,64 @@ class _AnalysingViewState extends State<AnalysingView>
   @override
   void initState() {
     super.initState();
+    _startedAt = DateTime.now();
+
     _rotationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat();
 
-    _stepTimer = Timer.periodic(const Duration(milliseconds: 1000), (timer) {
+    _stepTimer = Timer.periodic(const Duration(milliseconds: 700), (timer) {
       if (!mounted) return;
       setState(() {
         if (_activeStep < 2) {
           _activeStep++;
+          _obdComplete = _activeStep >= 1;
+          _sensorComplete = _activeStep >= 2;
         }
       });
+      if (_activeStep >= 2) timer.cancel();
     });
 
-    Future.delayed(const Duration(milliseconds: 1200), () {
-      if (mounted) setState(() => _obdComplete = true);
-    });
-    Future.delayed(const Duration(milliseconds: 2200), () {
-      if (mounted) setState(() => _sensorComplete = true);
-    });
-
-    _completionTimer = Timer(_analysisDuration, _finishAnalysis);
+    _diagnosisController = Get.find<DiagnosisController>();
+    _statusWorker = ever<DiagnosisStatus>(
+      _diagnosisController.status,
+      _handleStatusChange,
+    );
+    _handleStatusChange(_diagnosisController.status.value);
   }
 
-  void _finishAnalysis() {
-    if (!mounted) return;
-    Get.offNamed(AppRoutes.results);
+  void _handleStatusChange(DiagnosisStatus status) {
+    if (status != DiagnosisStatus.success && status != DiagnosisStatus.error) {
+      return;
+    }
+
+    final elapsed = DateTime.now().difference(_startedAt);
+    final remaining = _minimumDisplayDuration - elapsed;
+
+    if (remaining > Duration.zero) {
+      Future.delayed(remaining, () => _finishAnalysis(status));
+    } else {
+      _finishAnalysis(status);
+    }
+  }
+
+  void _finishAnalysis(DiagnosisStatus status) {
+    if (!mounted || _hasNavigated) return;
+    _hasNavigated = true;
+
+    if (status == DiagnosisStatus.success) {
+      Get.offNamed(AppRoutes.results);
+    } else {
+      Get.offNamed(AppRoutes.home);
+      Get.snackbar('Scan failed', _diagnosisController.errorMessage.value);
+    }
   }
 
   @override
   void dispose() {
     _stepTimer?.cancel();
-    _completionTimer?.cancel();
+    _statusWorker?.dispose();
     _rotationController.dispose();
     super.dispose();
   }
@@ -105,7 +134,7 @@ class _AnalysingViewState extends State<AnalysingView>
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        'This takes about 3 seconds.',
+                        'Gemini is reviewing your scan.',
                         style: TextStyle(
                           color: AppColors.greyDark,
                           fontSize: 13,

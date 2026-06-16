@@ -36,9 +36,13 @@ dependencies:
   cupertino_icons: ^1.0.8
   get: ^4.7.3
   camera: ^0.12.0+1
+  image_picker: ^1.1.2
   record: ^7.0.0
   path_provider: ^2.1.5
   google_fonts: ^6.2.1
+  google_generative_ai: ^0.4.7
+  flutter_dotenv: ^6.0.1
+  shared_preferences: ^2.3.3
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +96,7 @@ flutter:
   assets:
     - assets/images/logo.png
     - assets/images/onboarding/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

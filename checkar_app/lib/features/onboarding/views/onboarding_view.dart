@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:checkar_app/core/routes/app_routes.dart';
+import 'package:checkar_app/core/services/onboarding_service.dart';
 import 'package:checkar_app/core/theme/app_colors.dart';
 import 'package:checkar_app/features/onboarding/data/onboarding_pages.dart';
 import 'package:checkar_app/features/onboarding/widgets/onboarding_page_content.dart';
@@ -23,7 +24,8 @@ class _OnboardingViewState extends State<OnboardingView> {
     super.dispose();
   }
 
-  void _finishOnboarding() {
+  Future<void> _finishOnboarding() async {
+    await OnboardingService.markOnboardingSeen();
     Get.offAllNamed(AppRoutes.login);
   }
 

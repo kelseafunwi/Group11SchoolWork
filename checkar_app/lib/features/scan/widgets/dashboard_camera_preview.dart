@@ -4,7 +4,9 @@ import 'package:checkar_app/core/theme/app_colors.dart';
 import 'package:checkar_app/features/scan/widgets/scan_frame_overlay.dart';
 
 class DashboardCameraPreview extends StatefulWidget {
-  const DashboardCameraPreview({super.key});
+  const DashboardCameraPreview({super.key, this.onCameraReady});
+
+  final ValueChanged<CameraController>? onCameraReady;
 
   @override
   State<DashboardCameraPreview> createState() => _DashboardCameraPreviewState();
@@ -47,6 +49,7 @@ class _DashboardCameraPreviewState extends State<DashboardCameraPreview> {
       }
 
       setState(() => _controller = controller);
+      widget.onCameraReady?.call(controller);
     } catch (_) {
       if (mounted) {
         setState(() => _errorMessage = 'Unable to access the camera.');

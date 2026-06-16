@@ -1,0 +1,48 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="bitsandbytes" />
+          <option value="datasets" />
+          <option value="huggingface-hub" />
+          <option value="ipykernel" />
+          <option value="ipywidgets" />
+          <option value="llama-index" />
+          <option value="llama-index-embeddings-huggingface" />
+          <option value="matplotlib" />
+          <option value="numpy" />
+          <option value="openai" />
+          <option value="openai-agents" />
+          <option value="optimum" />
+          <option value="pandas" />
+          <option value="pandas-stubs" />
+          <option value="peft" />
+          <option value="pgvector" />
+          <option value="psycopg" />
+          <option value="pymongo" />
+          <option value="scikit-learn" />
+          <option value="sentence-transformers" />
+          <option value="sk" />
+          <option value="tokenizers" />
+          <option value="transformers" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyStubPackagesAdvertiser" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="pandas" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyStubPackagesCompatibilityInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredStubPackages">
+        <list>
+          <option value="pandas-stubs~=2.3.3" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

@@ -1,10 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:checkar_app/core/constants/app_assets.dart';
 import 'package:checkar_app/core/routes/app_routes.dart';
+import 'package:checkar_app/core/services/onboarding_service.dart';
+import 'package:checkar_app/core/services/session_service.dart';
 import 'package:checkar_app/core/theme/app_colors.dart';
 
 class SplashView extends StatefulWidget {
@@ -15,20 +15,30 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-  Timer? _timer;
-
   @override
   void initState() {
     super.initState();
-    _timer = Timer(const Duration(seconds: 2), () {
-      Get.offNamed(AppRoutes.onboarding);
-    });
+    _navigateNext();
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+  Future<void> _navigateNext() async {
+    final results = await Future.wait([
+      Future.delayed(const Duration(seconds: 2)),
+      OnboardingService.hasSeenOnboarding(),
+      SessionService.isLoggedIn(),
+    ]);
+    if (!mounted) return;
+
+    final hasSeenOnboarding = results[1] as bool;
+    final isLoggedIn = results[2] as bool;
+
+    if (!hasSeenOnboarding) {
+      Get.offNamed(AppRoutes.onboarding);
+    } else if (isLoggedIn) {
+      Get.offNamed(AppRoutes.home);
+    } else {
+      Get.offNamed(AppRoutes.login);
+    }
   }
 
   @override

@@ -5,9 +5,11 @@ class CameraControlsPanel extends StatelessWidget {
   const CameraControlsPanel({
     super.key,
     this.onCapture,
+    this.onPickFromGallery,
   });
 
   final VoidCallback? onCapture;
+  final VoidCallback? onPickFromGallery;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +39,8 @@ class CameraControlsPanel extends StatelessWidget {
               _CaptureButton(onPressed: onCapture ?? () {}),
               const SizedBox(width: 40),
               _ControlIconButton(
-                icon: Icons.cameraswitch_outlined,
-                onPressed: () {},
+                icon: Icons.photo_library_outlined,
+                onPressed: onPickFromGallery ?? () {},
               ),
             ],
           ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:checkar_app/features/auth/widgets/auth_app_bar.dart';
 import 'package:checkar_app/features/record/widgets/audio_waveform.dart';
 import 'package:checkar_app/features/record/widgets/engine_reference_image.dart';
 import 'package:checkar_app/features/record/widgets/record_instruction_banner.dart';
+import 'package:checkar_app/features/results/controllers/diagnosis_controller.dart';
 
 class RecordEngineSoundView extends StatefulWidget {
   const RecordEngineSoundView({super.key});
@@ -136,6 +138,11 @@ class _RecordEngineSoundViewState extends State<RecordEngineSoundView> {
     });
 
     if (wasRecording && navigateToAnalysis && _elapsedSeconds > 0) {
+      final path = _recordingPath;
+      if (path != null) {
+        final audioBytes = await File(path).readAsBytes();
+        unawaited(Get.find<DiagnosisController>().analyzeAudio(audioBytes));
+      }
       Get.offNamed(AppRoutes.analysing);
     }
   }

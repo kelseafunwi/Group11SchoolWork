@@ -41,13 +41,13 @@ class AuthAppBar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
-      centerTitle: false,
+      centerTitle: true,
       automaticallyImplyLeading: false,
       titleSpacing: 0,
       leadingWidth: showBackButton ? 56 : 16,
       leading: showBackButton
           ? Padding(
-              padding: const EdgeInsets.only(left: 12),
+              padding: const EdgeInsets.only(left: 20),
               child: Center(
                 child: AppHeaderBackButton(
                   style: _isDark

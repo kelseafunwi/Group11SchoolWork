@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:checkar_app/core/routes/app_routes.dart';
+import 'package:checkar_app/core/services/session_service.dart';
 import 'package:checkar_app/core/theme/app_colors.dart';
 import 'package:checkar_app/features/auth/widgets/auth_app_bar.dart';
 import 'package:checkar_app/features/auth/widgets/auth_password_toggle.dart';
@@ -33,7 +34,8 @@ class _RegisterViewState extends State<RegisterView> {
     super.dispose();
   }
 
-  void _onCreateAccount() {
+  Future<void> _onCreateAccount() async {
+    await SessionService.markLoggedIn();
     Get.offAllNamed(AppRoutes.home);
   }
 

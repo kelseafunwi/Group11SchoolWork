@@ -72,5 +72,7 @@
 		<string>CheckAR needs camera access to scan your vehicle dashboard.</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>CheckAR needs microphone access to record engine sounds for analysis.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>CheckAR needs photo library access so you can select a dashboard photo to scan.</string>
 	</dict>
 </plist>
